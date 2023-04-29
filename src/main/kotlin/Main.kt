@@ -4,12 +4,16 @@ enum class Level { BASIC, INTERMEDIATE, DIFFICULT }
 
 class User(val name: String)
 
-data class EducationalContent(val name: String, val durationInMinutes: Int = 60, val description: String)
+data class EducationalContent(val name: String, val durationInMinutes: Int = 60, val description: String) {
+    override fun toString(): String {
+        return "\nContent: $name, duration: $durationInMinutes, description: $description"
+    }
+}
 
-class Education(val name: String, var level: Level, var contents: List<EducationalContent>,
-                var startDate: LocalDate, var endDate: LocalDate, var instructor: String, var contactInfo: String) {
+class Course(val name: String, var level: Level, var contents: List<EducationalContent>,
+             var startDate: LocalDate, var endDate: LocalDate, var instructor: String, var contactInfo: String) {
 
-    val enrolledUsers = mutableListOf<User>()
+    private val enrolledUsers = mutableListOf<User>()
 
     fun enroll(user: User) {
         enrolledUsers.add(user)
@@ -21,7 +25,7 @@ class Education(val name: String, var level: Level, var contents: List<Education
         println("User ${user.name} unenrolled from education $name")
     }
 
-    fun listEnrolledUsers(): List<User> {
+    fun getListEnrolledUsers(): List<User> {
         return enrolledUsers
     }
 
@@ -29,12 +33,12 @@ class Education(val name: String, var level: Level, var contents: List<Education
         return contents.sumOf { it.durationInMinutes }
     }
 
-    fun getAverageDuration(): Double {
-        return contents.map { it.durationInMinutes }.average()
+    fun getEducationContents(): List<EducationalContent> {
+        return contents
     }
 
     override fun toString(): String {
-        return "Education(name='$name', level=$level, startDate=$startDate, endDate=$endDate, instructor='$instructor', contactInfo='$contactInfo')"
+        return "Education(name='$name', level=$level, contents=$contents startDate=$startDate, endDate=$endDate, instructor='$instructor', contactInfo='$contactInfo')"
     }
 }
 
@@ -51,7 +55,7 @@ fun main() {
         "Object-Oriented Programming in Kotlin",
         description = "Understand the principles of OOP in Kotlin"
     )
-    val content3 = EducationalContent("Android Development with Kotlin",
+    val content3 = EducationalContent("Android Development with Kotlin - first steps",
         180,
         "Build Android apps using Kotlin"
     )
@@ -59,7 +63,7 @@ fun main() {
     val startDate = LocalDate.of(2023, 5, 1)
     val endDate = LocalDate.of(2023, 5, 31)
 
-    val education1 = Education(
+    val course1 = Course(
         "Kotlin For Beginners",
         Level.BASIC,
         listOf(content1, content2),
@@ -68,8 +72,8 @@ fun main() {
         "John Doe",
         "john.doe@dio.me"
     )
-    val education2 = Education(
-        "Android Development with Kotlin",
+    val course2 = Course(
+        "Native Android Development",
         Level.DIFFICULT,
         listOf(content1, content2, content3),
         startDate,
@@ -78,23 +82,41 @@ fun main() {
         "alisha.wood@dio.me"
     )
 
-    education1.enroll(user1)
-    education1.enroll(user2)
-    education2.enroll(user2)
-    education2.enroll(user3)
+    course1.enroll(user1)
+    course1.enroll(user2)
+    course2.enroll(user2)
+    course2.enroll(user3)
 
     println(
-        "Enrolled users in education '${education1.name}': ${
-            education1.listEnrolledUsers().joinToString(", ") { it.name }
+        "Enrolled users in course '${course1.name}': ${
+            course1.getListEnrolledUsers().joinToString(", ") {
+                "\n     - " + it.name 
+            }
         }"
     )
     println(
-        "Enrolled users in education '${education2.name}': ${
-            education2.listEnrolledUsers().joinToString(", ") { it.name }
+        "Enrolled users in course '${course2.name}': ${
+            course2.getListEnrolledUsers().joinToString(", ") {
+                "\n     - " + it.name 
+            }
         }"
     )
-    println("Total duration of education '${education1.name}': ${education1.getTotalDuration()} minutes")
-    println("Total duration of education '${education2.name}': ${education2.getTotalDuration()} minutes")
-    println("Average duration of education '${education1.name}': ${education1.getAverageDuration()} minutes")
+
+    println("Total duration of course '${course2.name}': ${course2.getTotalDuration()} minutes")
+    println(
+        "Contents included on course '${course2.name}': ${
+            course2.getEducationContents().joinToString(", ") {
+                "\n     - " + it.name + ", duration: " + it.durationInMinutes + "minutes"
+            }
+        }"
+    )
+    println("Total duration of course '${course1.name}': ${course1.getTotalDuration()} minutes")
+    println(
+        "Contents included on course '${course1.name}': ${
+            course1.getEducationContents().joinToString(", ") {
+                "\n     - " + it.name + ", duration: " + it.durationInMinutes + "minutes" 
+            }
+        }"
+    )
 }
    
