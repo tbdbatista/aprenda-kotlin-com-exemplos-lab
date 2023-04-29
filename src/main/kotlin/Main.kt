@@ -4,11 +4,7 @@ enum class Level { BASIC, INTERMEDIATE, DIFFICULT }
 
 class User(val name: String)
 
-data class EducationalContent(val name: String, val durationInMinutes: Int = 60, val description: String) {
-    override fun toString(): String {
-        return "\nContent: $name, duration: $durationInMinutes, description: $description"
-    }
-}
+data class EducationalContent(val name: String, val durationInMinutes: Int = 60, val description: String)
 
 class Course(val name: String, var level: Level, var contents: List<EducationalContent>,
              var startDate: LocalDate, var endDate: LocalDate, var instructor: String, var contactInfo: String) {
@@ -37,8 +33,34 @@ class Course(val name: String, var level: Level, var contents: List<EducationalC
         return contents
     }
 
-    override fun toString(): String {
-        return "Education(name='$name', level=$level, contents=$contents startDate=$startDate, endDate=$endDate, instructor='$instructor', contactInfo='$contactInfo')"
+    fun printEnrolledUsers() {
+        println(
+            "Enrolled users in course '${this.name}': ${
+                this.getListEnrolledUsers().joinToString(", ") {
+                    "\n     - " + it.name
+                }
+            }"
+        )
+    }
+
+    fun printDuration() {
+        println("Total duration of course '${this.name}': ${this.getTotalDuration()} minutes")
+    }
+
+    fun printDescription() {
+        println(
+            "Contents included on course '${this.name}': ${
+                this.getEducationContents().joinToString(", ") {
+                    "\n     - " + it.name + ", duration: " + it.durationInMinutes + "minutes"
+                }
+            }"
+        )
+        println(
+            "Starting date: $startDate, ending date: $endDate"
+        )
+        println(
+            "Instructor information for '${this.name}': name: $instructor, e-mail: $contactInfo"
+        )
     }
 }
 
@@ -87,36 +109,13 @@ fun main() {
     course2.enroll(user2)
     course2.enroll(user3)
 
-    println(
-        "Enrolled users in course '${course1.name}': ${
-            course1.getListEnrolledUsers().joinToString(", ") {
-                "\n     - " + it.name 
-            }
-        }"
-    )
-    println(
-        "Enrolled users in course '${course2.name}': ${
-            course2.getListEnrolledUsers().joinToString(", ") {
-                "\n     - " + it.name 
-            }
-        }"
-    )
+    course1.printEnrolledUsers()
+    course1.printDuration()
+    course1.printDescription()
 
-    println("Total duration of course '${course2.name}': ${course2.getTotalDuration()} minutes")
-    println(
-        "Contents included on course '${course2.name}': ${
-            course2.getEducationContents().joinToString(", ") {
-                "\n     - " + it.name + ", duration: " + it.durationInMinutes + "minutes"
-            }
-        }"
-    )
-    println("Total duration of course '${course1.name}': ${course1.getTotalDuration()} minutes")
-    println(
-        "Contents included on course '${course1.name}': ${
-            course1.getEducationContents().joinToString(", ") {
-                "\n     - " + it.name + ", duration: " + it.durationInMinutes + "minutes" 
-            }
-        }"
-    )
+    course2.printEnrolledUsers()
+    course2.printDuration()
+    course2.printDescription()
+
 }
    
